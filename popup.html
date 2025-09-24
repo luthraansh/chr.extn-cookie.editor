@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cookie Editor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10px;
+      width: 320px;
+    }
+    #currentUrl {
+      font-size: 12px;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    .cookie-item {
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      padding: 5px 0;
+    }
+    .cookie-header {
+      font-weight: bold;
+      cursor: pointer;
+      color: #333;
+    }
+    .cookie-header:hover {
+      background: #f5f5f5;
+    }
+    .cookie-details {
+      margin-top: 5px;
+      padding-left: 10px;
+      font-size: 12px;
+    }
+    .hidden {
+      display: none;
+    }
+    .delete-btn {
+      margin-top: 5px;
+      padding: 2px 6px;
+      font-size: 12px;
+      background: #d9534f;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-bottom: 5px;
+    }
+    .delete-btn:hover {
+      background: #c9302c;
+    }
+  </style>
+</head>
+<body>
+  <div id="currentUrl">Loading...</div>
+  <div id="cookieList">Loading cookies...</div>
+  <script src="popup.js"></script>
+</body>
+</html>

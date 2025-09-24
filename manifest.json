@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Cookie Editor",
+  "version": "1.0",
+  "description": "View and edit cookies for the current tab.",
+  "permissions": [
+    "cookies",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "incognito": "split",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/cookie16.png",
+      "48": "icons/cookie48.png",
+      "128": "icons/cookie128.png"
+    }
+  }
+}
