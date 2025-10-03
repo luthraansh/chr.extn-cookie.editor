@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Cookie Editor",
+  "name": "Cookie Editor with Whitelist",
   "version": "1.0",
-  "description": "View and edit cookies for the current tab.",
+  "description": "Whitelist domains, and view/edit current tab cookies.",
   "permissions": [
     "cookies",
     "tabs",
-    "storage"
+    "storage",
+    "browsingData"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -14,13 +15,19 @@
   "background": {
     "service_worker": "background.js"
   },
-  "incognito": "split",
+  "incognito": "spanning",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icons/cookie16.png",
-      "48": "icons/cookie48.png",
-      "128": "icons/cookie128.png"
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
     }
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
   }
 }

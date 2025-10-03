@@ -52,8 +52,21 @@
   </style>
 </head>
 <body>
-  <div id="currentUrl">Loading...</div>
-  <div id="cookieList">Loading cookies...</div>
+  <div>
+    <div id="message" style="color: green; font-weight: bold; margin-bottom: 5px;"></div>
+    <p>
+      <label><input type="checkbox" id="deleteOnStartup" />Delete on startup</label>
+    </p>
+    <p><a href="#" id="addDomainToWhitelist"></a></p>
+    <p><a href="#" id="removeDomainFromWhitelist"></a></p>
+    <p><a href="#" id="options">Manage Whitelisted Domains</a></p>
+  </div>
+  <div style="padding: 5px;">
+    <div>Current Tab</div>
+    <div id="currentUrl">Loading...</div>
+    <button class="delete-btn" id="deleteCurrentTabCookies">Loading...</button>
+    <div id="cookieList"></div>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>
