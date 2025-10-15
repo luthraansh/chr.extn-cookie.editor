@@ -1,35 +1,28 @@
 // perform cleanup on restart
 chrome.runtime.onStartup.addListener(() => {
-  console.log('Running extension on browser startup:', chrome.runtime.getManifest().name);
-  chrome.storage.local.get('deleteOnStartup', (data) => {
-    if (data.deleteOnStartup) {
-      deleteNonWhitelisted().then(() => { return true; });
-    } else {
-      console.log('Skipping cleanup on startup as per user preference.');
-    }
-  });
+  browserStartup();
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-
   if (request.action === "deleteNonWhitelisted") {
-    // Call the async function and handle the response
     deleteNonWhitelisted().then((result) => {
-      // Send a success response back to the popup
       sendResponse(result);
     });
-    // Return true to indicate that you will send a response asynchronously.
-    return true; // keep channel open 
+    return true; // to keep channel open and indicate async response 
   }
 
   if (request.action === "getNonWhitelistedDomains") {
-    // Call the async function and handle the response
-    getNonWhitelistedDomains().then((result) => {
-      // Send a success response back to the popup
+    getNonWhitelistedDomainsWithCount().then((result) => {
       sendResponse(result);
     });
-    // Return true to indicate that you will send a response asynchronously.
-    return true; // keep channel open 
+    return true; // to keep channel open and indicate async response 
+  }
+
+  if (request.action === "getWhitelist") {
+    getWhitelist().then((result) => {
+      sendResponse(result);
+    });
+    return true; // to keep channel open and indicate async response 
   }
 
   // Get cookies for the current tab
@@ -47,8 +40,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ cookies, url });
       });
     });
-
-    return true; // keep channel open
+    return true; // to keep channel open and indicate async response 
   }
 
   // Delete a single cookie
@@ -59,7 +51,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ success: !!details });
       }
     );
-    return true;
+    return true; // to keep channel open and indicate async response 
   }
 
   // Set or update a cookie
@@ -67,7 +59,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     chrome.cookies.set(request.cookie, cookie => {
       sendResponse({ success: !!cookie });
     });
-    return true;
+    return true; // to keep channel open and indicate async response 
   }
 
   // Delete all cookies for the current tab
@@ -88,17 +80,52 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
       });
     });
-    return true;
+    return true; // to keep channel open and indicate async response 
   }
 });
 
-async function deleteNonWhitelisted() {
-  const allDomains = await getAllDomains();
-  const whitelist = (await chrome.storage.local.get({ whitelist: [] })).whitelist;
-  const nonWhitelistedDomains = allDomains.filter(domain => {
-    return !whitelist.includes(getParentDomain(domain));
+async function browserStartup() {
+  console.log('Running extension on browser startup:', chrome.runtime.getManifest().name);
+  const deleteOnStartup = await chrome.storage.local.get('deleteOnStartup');
+  if (deleteOnStartup) {
+    await deleteNonWhitelisted();
+  } else {
+    console.log(`No cookies deleted. Delete on startup checkbox is not checked.`);
+  }
+}
+
+async function getWhitelist() {
+  const whitelist = (await chrome.storage.local.get("whitelist")).whitelist || [];
+  return whitelist;
+}
+
+async function getNonWhitelistedDomainsWithCount() {
+  const whitelist = await getWhitelist();
+  const cookies = await chrome.cookies.getAll({});
+  const nonWhitelistedDomains = [];
+  cookies.forEach(cookie => {
+    const domain = getDomain(cookie.domain);
+    if (!whitelist.includes(domain)) {
+      const match = nonWhitelistedDomains.find(d => d.domain === domain);
+      if (match) {
+        match.cookieCount += 1;
+      } else {
+        const cookieCount = 1;
+        nonWhitelistedDomains.push({ domain, cookieCount });
+      }
+    }
   });
+  return nonWhitelistedDomains.sort((a, b) => a.domain.localeCompare(b.domain));;
+}
+
+async function deleteNonWhitelisted() {
+  const whitelist = await getWhitelist();
+  if (whitelist.length === 0) {
+    console.log('Skipping deletion because whitelist is empty.');
+    return;
+  }
   const whitelistDomains = whitelist.map(d => 'https://' + d).concat(whitelist.map(d => 'http://' + d));
+  const nonWhitelistedDomains = await getNonWhitelistedDomainsWithCount();
   chrome.browsingData.remove(
     {
       excludeOrigins: whitelistDomains,
@@ -113,31 +140,12 @@ async function deleteNonWhitelisted() {
       "webSQL": true,
     }
   );
-  const message = `Non-Whitelisted cookies deleted (${nonWhitelistedDomains.length} domains)`;
-  console.log(message, nonWhitelistedDomains);
-  return { message, nonWhitelistedDomains };
+  console.log(`Non-Whitelisted cookies deleted for ${nonWhitelistedDomains.length} domains.`);
+  console.table(nonWhitelistedDomains);
+  return true;
 }
 
-async function getNonWhitelistedDomains() {
-  const allDomains = await getAllDomains();
-  const whitelist = (await chrome.storage.local.get({ whitelist: [] })).whitelist;
-  const nonWhitelistedDomains = allDomains.filter(domain => {
-    return !whitelist.includes(getParentDomain(domain));
-  });
-  return { nonWhitelistedDomains };
-}
-
-async function getAllDomains() {
-  const allDomains = new Set();
-  const cookies = await chrome.cookies.getAll({});
-  cookies.forEach(cookie => {
-    const protocol = cookie.secure ? 'https://' : 'http://';
-    allDomains.add(protocol + cookie.domain);
-  });
-  return Array.from(allDomains);
-}
-
-function getParentDomain(url) {
+function getDomain(url) {
     // Remove the protocol (http:// or https://) if it exists
     const domain = url.replace(/^https?:\/\//, '').split('/')[0]; // Strip protocol and path
     // Remove leading dot if it exists

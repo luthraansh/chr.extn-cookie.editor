@@ -15,7 +15,7 @@
   "background": {
     "service_worker": "background.js"
   },
-  "incognito": "spanning",
+  "incognito": "split",
   "action": {
     "default_popup": "popup.html",
     "default_icon": {

@@ -84,11 +84,11 @@
 <body>
   <div class="container">
     <div class="title" id="title"></div>
-    <div class="message" id="message"></div>
+    <div class="message" id="message">&nbsp;</div>
     <div class="content">
       <div class="textarea-container">
-        <label for="whitelist">Whitelisted domains. Enter one domain per line (e.g., example.com):</label>
-        <textarea id="whitelist" placeholder="foo.com&#10;bar.com"></textarea>
+        <label for="whitelistedDomains">Whitelisted domains. Enter one domain per line (e.g., example.com):</label>
+        <textarea id="whitelistedDomains" placeholder="foo.com&#10;bar.com"></textarea>
         <p></p>
         <label for="nonWhitelistedDomains">Non-Whitelisted Domains with Cookies:</label>
         <textarea id="nonWhitelistedDomains" placeholder="No cookies for non-whitelisted domains." disabled></textarea>
@@ -97,6 +97,7 @@
         <p></p>
         <button id="save">Save Whitelist</button>
         <button id="deleteNonWhitelisted">Delete Non-Whitelisted</button>
+        <button id="reload">Reload</button>
         <button id="close">Close</button>
       </div>
     </div>
