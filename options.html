@@ -12,6 +12,14 @@
       padding: 10px;
     }
 
+    .title {
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+      box-sizing: border-box;
+      width: 100%;
+      text-align: center;
+    }
+
     body {
       display: flex;
       flex-direction: column;
@@ -27,14 +35,6 @@
       display: flex;
       flex-direction: column;       /* Stack label + content vertically */
       box-sizing: border-box;
-    }
-
-    .title {
-      font-weight: bold;
-      border-bottom: 1px solid #ccc;
-      box-sizing: border-box;
-      width: 100%;
-      text-align: center;
     }
 
     .message {
@@ -76,10 +76,15 @@
     }
 
     button {
-      margin-bottom: 10px;
+      margin: 5px;
       width: 100%;
     }
-  </style>
+
+    label {
+      margin: 5px;
+      width: 100%;
+    }
+</style>
 </head>
 <body>
   <div class="container">
@@ -94,8 +99,9 @@
         <textarea id="nonWhitelistedDomains" placeholder="No cookies for non-whitelisted domains." disabled></textarea>
       </div>
       <div class="button-container">
-        <p></p>
-        <button id="save">Save Whitelist</button>
+        <label><input type="checkbox" id="deleteOnStartup" />&nbsp;Delete non-whitelisted on startup</label>
+        <button id="save">Save</button>
+        <button id="simulateWithoutDelete">Simulate without deleting</button>
         <button id="deleteNonWhitelisted">Delete Non-Whitelisted</button>
         <button id="reload">Reload</button>
         <button id="close">Close</button>

@@ -54,16 +54,9 @@
 <body>
   <div>
     <div id="message" style="color: green; font-weight: bold; margin-bottom: 5px;"></div>
-    <p>
-      <label><input type="checkbox" id="deleteOnStartup" />Delete on startup</label>
-    </p>
-    <p><a href="#" id="addDomainToWhitelist"></a></p>
-    <p><a href="#" id="removeDomainFromWhitelist"></a></p>
-    <p><a href="#" id="options">Manage Whitelisted Domains</a></p>
-  </div>
-  <div style="padding: 5px;">
-    <div>Current Tab</div>
-    <div id="currentTabUrl">Loading...</div>
+    <p><a href="#" id="options">Options</a></p>
+    <div id="currentTabDomain"><b>Domain: </b>Loading...</div>
+    <p><a href="#" id="toggleDomainWhitelist"></a></p>
     <button class="delete-btn" id="deleteCurrentTabCookies">Loading...</button>
     <div id="currentTabCookies"></div>
   </div>
