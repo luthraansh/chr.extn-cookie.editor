@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Extension Options</title>
+  <title>Whitelist Options</title>
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-
     [class] {
-      padding: 10px;
+      padding: 5px;
     }
 
     .title {
@@ -29,30 +24,20 @@
     }
 
     .container {
-      width: 700px;
-      height: 700px;
       border: 1px solid darkgray;
       display: flex;
       flex-direction: column;       /* Stack label + content vertically */
       box-sizing: border-box;
     }
 
-    .message {
+    #message {
       color: green;
       font-weight: bold;
-      box-sizing: border-box;
-      width: 100%;
-      max-height: 400px;
-      overflow: auto;
-      text-align: left;
-      white-space: pre-line;   /* Allows wrapping */
-      overflow-wrap: break-word;
+      margin-bottom: 5px;
     }
 
     .content {
-      flex: 1;
       display: flex;
-      flex-direction: row;
     }
 
     .textarea-container {
@@ -62,7 +47,7 @@
 
     textarea {
       width: 100%;
-      min-height: 200px;
+      min-height: 300px;
       overflow: auto;
     }
 
@@ -79,11 +64,6 @@
       margin: 5px;
       width: 100%;
     }
-
-    label {
-      margin: 5px;
-      width: 100%;
-    }
 </style>
 </head>
 <body>
@@ -92,19 +72,23 @@
     <div class="message" id="message">&nbsp;</div>
     <div class="content">
       <div class="textarea-container">
-        <label for="whitelistedDomains">Whitelisted domains. Enter one domain per line (e.g., example.com):</label>
-        <textarea id="whitelistedDomains" placeholder="foo.com&#10;bar.com"></textarea>
-        <p></p>
-        <label for="nonWhitelistedDomains">Non-Whitelisted Domains with Cookies:</label>
-        <textarea id="nonWhitelistedDomains" placeholder="No cookies for non-whitelisted domains." disabled></textarea>
+        <label for="whitelistTextArea">Whitelisted domains. Enter one domain per line (e.g., example.com):</label>
+        <textarea id="whitelistTextArea" placeholder="foo.com&#10;bar.com"></textarea>
       </div>
       <div class="button-container">
-        <label><input type="checkbox" id="deleteOnStartup" />&nbsp;Delete non-whitelisted on startup</label>
-        <button id="save">Save</button>
-        <button id="simulateWithoutDelete">Simulate without deleting</button>
+        <p></p>
+        <button id="saveWhitelist">Save Whitelist</button>
+      </div>
+    </div>
+    <div class="content">
+      <div class="textarea-container">
+        <label for="nonWhitelistTextArea">Non-Whitelisted domains with cookies:</label>
+        <textarea id="nonWhitelistTextArea" placeholder="No cookies for non-whitelisted domains." disabled></textarea>
+      </div>
+      <div class="button-container">
+        <p></p>
+        <label><input type="checkbox" id="deleteOnStartup" />&nbsp;Delete on startup</label>
         <button id="deleteNonWhitelisted">Delete Non-Whitelisted</button>
-        <button id="reload">Reload</button>
-        <button id="close">Close</button>
       </div>
     </div>
   </div>

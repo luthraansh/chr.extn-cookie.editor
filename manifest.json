@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Cookie Editor with Whitelist",
-  "version": "1.0",
+  "version": "0.8",
   "description": "Whitelist domains, and view/edit current tab cookies.",
   "permissions": [
     "cookies",
+    "windows",
     "tabs",
     "activeTab",
     "storage",

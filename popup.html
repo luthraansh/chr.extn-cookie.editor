@@ -9,10 +9,10 @@
       margin: 10px;
       width: 320px;
     }
-    #currentUrl {
-      font-size: 12px;
+    #message {
+      color: green;
+      font-weight: bold;
       margin-bottom: 5px;
-      color: #555;
     }
     .cookie-item {
       border-top: 1px solid #ccc;
@@ -53,9 +53,10 @@
 </head>
 <body>
   <div>
-    <div id="message" style="color: green; font-weight: bold; margin-bottom: 5px;"></div>
-    <p><a href="#" id="options">Options</a></p>
-    <div id="currentTabDomain"><b>Domain: </b>Loading...</div>
+    <div id="message"></div>
+    <p><a href="#" id="openOptions">Options</a></p>
+    <div style="display: flex;">Current Domain:&nbsp;<div id="currentTabDomain" style="font-weight: bold;">Loading...</div></div>
+    <div style="display: flex;">Whitelist Status:&nbsp;<div id="whitelistStatus">Loading...</div></div>
     <p><a href="#" id="toggleDomainWhitelist"></a></p>
     <button class="delete-btn" id="deleteCurrentTabCookies">Loading...</button>
     <div id="currentTabCookies"></div>
