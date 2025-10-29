@@ -1,35 +1,29 @@
 {
-  "manifest_version": 3,
-  "name": "Cookie Editor with Whitelist",
-  "version": "0.8",
-  "description": "Whitelist domains, and view/edit current tab cookies.",
-  "permissions": [
-    "cookies",
-    "windows",
-    "tabs",
-    "activeTab",
-    "storage",
-    "browsingData"
-  ],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "action": {
+    "default_icon": {
+        "128": "icon.png",
+        "16": "icon.png",
+        "48": "icon.png"
+    },
+    "default_popup": "popup.html"
+  },
   "background": {
     "service_worker": "background.js"
   },
-  "incognito": "split",
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icon.png",
-      "48": "icon.png",
-      "128": "icon.png"
-    }
-  },
-  "options_page": "options.html",
+  "description": "Whitelist domains, and view/edit current tab cookies.",
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
     "128": "icon.png"
-  }
+  },
+  "incognito": "split",
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlZ6Xk2tW6rZFtXFG0QWkLqyCwYLvYwS3RlOakuwD9TUAjZWseeahHhc6Iwpociom9OwKVDOYDbzEAR3er0v1yMlTHjeGX5NB1mFrOcV32Nr64tkg4jLDCfJZeesZlSTn6VkwQy7U6NTXlZbbXqXCn7pJhTeog+w+kGtLMEF6mr+aEFf5Yyg2RARXy0zONgkw/nKWNbf01WWKl4gF0mddaT3GkHbTWBgG3IIxu5Md7/UvcGbjT9UIZ1kBJE5duUn4g4uIENkBCIakIO2xg9qNLQrY4Q4ZfnhvGGytcMMUvOENdkrEoOcz7hvHC9UEdW2EnFztxhqFBYzG2j+MrQ5aDwIDAQAB",
+   "manifest_version": 3,
+   "name": "Cookie Editor with Whitelist",
+   "options_page": "options.html",
+   "permissions": [ "cookies", "windows", "tabs", "activeTab", "storage", "browsingData" ],
+   "version": "0.8"
 }
