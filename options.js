@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const title = document.getElementById('title');
-  const deleteOnStartup = document.getElementById('deleteOnStartup');
+  const deleteOnStartupChkbox = document.getElementById('deleteOnStartup');
   const message = document.getElementById('message');
   const whitelistTextArea = document.getElementById('whitelistTextArea');
   const nonWhitelistTextArea = document.getElementById('nonWhitelistTextArea');
@@ -11,12 +11,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   title.textContent = chrome.runtime.getManifest().name;
 
   // initialize and handle changes for deleteOnStartup checkbox
-  chrome.storage.local.get('deleteOnStartup', (data) => {
-    deleteOnStartup.checked = data.deleteOnStartup || false;
-  });
-  deleteOnStartup.addEventListener('change', async (e) => {
+  const deleteOnStartup = (await chrome.storage.local.get("deleteOnStartup")).deleteOnStartup;
+  deleteOnStartupChkbox.checked = deleteOnStartup || false;
+  deleteOnStartupChkbox.addEventListener('change', async (e) => {
     e.preventDefault();
-    await chrome.storage.local.set({ deleteOnStartup: deleteOnStartup.checked });
+    await chrome.storage.local.set({ deleteOnStartup: deleteOnStartupChkbox.checked });
   });
 
   // initialize whitelist text area

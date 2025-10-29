@@ -71,7 +71,7 @@ async function setExtensionIcon(isWhitelisted) {
 
 async function browserStartup() {
   console.log(new Date().toLocaleString(), ':', 'Running extension on browser startup:', chrome.runtime.getManifest().name);
-  const deleteOnStartup = await chrome.storage.local.get('deleteOnStartup');
+  const deleteOnStartup = (await chrome.storage.local.get('deleteOnStartup'))?.deleteOnStartup;
   if (deleteOnStartup) {
     await deleteNonWhitelisted();
   }
@@ -86,12 +86,15 @@ async function getCurrentTabCookies() {
 }
 
 async function getCurrentTabInfo() {
+  const currentTabInfo = { isWhitelisted: true, isHttp: false };
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  const url = tab.url;
-  const currentTabInfo = { url, domain: url, isWhitelisted: true, isHttp: false };
-  if (url?.startsWith("http")) {
+  if (tab) {
+    currentTabInfo.url = tab.url;
+    currentTabInfo.domain = tab.url;
+  }
+  if (tab.url?.startsWith("http")) {
     const whitelist = await getWhitelist();
-    currentTabInfo.domain = getDomain(url);
+    currentTabInfo.domain = getDomain(tab.url);
     currentTabInfo.isWhitelisted = whitelist.includes(currentTabInfo.domain);
     currentTabInfo.isHttp = true;
   }
@@ -176,20 +179,20 @@ async function deleteNonWhitelisted() {
   }
   const whitelistWithHttp = whitelist.map(d => 'https://' + d).concat(whitelist.map(d => 'http://' + d));
   const nonWhitelistedDomains = await getNonWhitelistedDomainsWithCount();
-  // chrome.browsingData.remove(
-  //   {
-  //     excludeOrigins: whitelistWithHttp,
-  //   }, {
-  //     "appcache": true,
-  //     "cacheStorage": true,
-  //     "cookies": true,
-  //     "fileSystems": true,
-  //     "indexedDB": true,
-  //     "localStorage": true,
-  //     "serviceWorkers": true,
-  //     "webSQL": true,
-  //   }
-  // );
+  chrome.browsingData.remove(
+    {
+      excludeOrigins: whitelistWithHttp,
+    }, {
+      "appcache": true,
+      "cacheStorage": true,
+      "cookies": true,
+      "fileSystems": true,
+      "indexedDB": true,
+      "localStorage": true,
+      "serviceWorkers": true,
+      "webSQL": true,
+    }
+  );
   console.log(new Date().toLocaleString(), ':', `Non-Whitelisted cookies deleted for ${nonWhitelistedDomains.length} domains.`);
   console.log(new Date().toLocaleString(), ':', nonWhitelistedDomains);
 }
