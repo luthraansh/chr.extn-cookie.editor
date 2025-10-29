@@ -10,52 +10,45 @@ document.addEventListener('DOMContentLoaded', async () => {
   // initialize title
   title.textContent = chrome.runtime.getManifest().name;
 
-  // initialize deleteOnStartup checkbox
+  // initialize and handle changes for deleteOnStartup checkbox
   chrome.storage.local.get('deleteOnStartup', (data) => {
     deleteOnStartup.checked = data.deleteOnStartup || false;
   });
-
-  // initialize whitelist input
-  chrome.runtime.sendMessage({ action: "getWhitelist" }, (response) => {
-    const whitelist = response || [];
-    whitelistTextArea.value = whitelist.join('\n');
-  });
-
-  // initialize non-whitelisted domains input
-  chrome.runtime.sendMessage({ action: "getNonWhitelistedDomainsWithCount" }, (response) => {
-    nonWhitelistTextArea.value = response.map(d => `${d.domain} - ${d.cookieCount} cookies`).join('\n');
-  });
-
-  // handle deleteOnStartup checkbox change
-  deleteOnStartup.addEventListener('change', async () => {
+  deleteOnStartup.addEventListener('change', async (e) => {
+    e.preventDefault();
     await chrome.storage.local.set({ deleteOnStartup: deleteOnStartup.checked });
   });
 
-  // handle Save button click
-  saveWhitelist.addEventListener('click', () => {
+  // initialize whitelist text area
+  const whitelist = await chrome.runtime.sendMessage({ action: "getWhitelist" });
+  whitelistTextArea.value = whitelist.join('\n');
+
+  // initialize non-whitelisted domains text area
+  const nonWhitelistedDomains = await chrome.runtime.sendMessage({ action: "getNonWhitelistedDomainsWithCount" });
+  nonWhitelistTextArea.value = nonWhitelistedDomains.map(d => `${d.domain} - ${d.cookieCount} cookies`).join('\n');
+
+  // handle Save whitelist button
+  saveWhitelist.addEventListener('click', async (e) => {
+    e.preventDefault();
     const newWhitelist = whitelistTextArea.value
       .split('\n')              // Split by newline
       .map(line => line.trim()) // Trim each line
       .filter(line => line)     // Remove empty lines
       .map(getDomain);          // Normalize to parent domains
-    const sortedUniqueWhitelist = [...new Set(newWhitelist)].sort(); // Remove duplicates and sort
-    chrome.storage.local.set({ whitelist: sortedUniqueWhitelist }, () => {
-      message.textContent = 'Whitelist saved.';
-    });
-    whitelistTextArea.value = sortedUniqueWhitelist.join('\n');
-    chrome.runtime.sendMessage({ action: "getNonWhitelistedDomainsWithCount" }, (response) => {
-      nonWhitelistTextArea.value = response.map(d => `${d.domain} - ${d.cookieCount} cookies`).join('\n');
-    });
+    const whitelist = (await chrome.runtime.sendMessage({ action: "saveWhitelist", whitelist: newWhitelist })).whitelist
+    message.textContent = "Whitelist saved.";
+    whitelistTextArea.value = whitelist.join('\n');
+    const nonWhitelistedDomains = await chrome.runtime.sendMessage({ action: "getNonWhitelistedDomainsWithCount" });
+    nonWhitelistTextArea.value = nonWhitelistedDomains.map(d => `${d.domain} - ${d.cookieCount} cookies`).join('\n');
   });
 
-  // handle Delete Non-Whitelisted button click
-  deleteNonWhitelisted.addEventListener('click', () => {
-    chrome.runtime.sendMessage({ action: "deleteNonWhitelisted" }, (response) => {
-      message.textContent = "Non-whitelisted cookies deleted.";
-      chrome.runtime.sendMessage({ action: "getNonWhitelistedDomainsWithCount" }, (response) => {
-        nonWhitelistTextArea.value = response.map(d => `${d.domain} - ${d.cookieCount} cookies`).join('\n');
-      });
-    });
+  // handle Delete Non-Whitelisted button
+  deleteNonWhitelisted.addEventListener('click', async (e) => {
+    e.preventDefault();
+    await chrome.runtime.sendMessage({ action: "deleteNonWhitelisted" });
+    message.textContent = "Non-whitelisted cookies deleted.";
+    const nonWhitelistedDomains = await chrome.runtime.sendMessage({ action: "getNonWhitelistedDomainsWithCount" });
+    nonWhitelistTextArea.value = nonWhitelistedDomains.map(d => `${d.domain} - ${d.cookieCount} cookies`).join('\n');
   });
 
   function getDomain(url) {

@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const currentTabCookies = document.getElementById("currentTabCookies");
   const deleteCurrentTabCookies = document.getElementById("deleteCurrentTabCookies");
 
-  openOptions.addEventListener('click', () => {
+  openOptions.addEventListener('click', (e) => {
+    e.preventDefault();
     chrome.runtime.sendMessage({ action: "openOptions" });
     // chrome.runtime.openOptionsPage();
   });
@@ -37,7 +38,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     toggleDomainWhitelist.innerHTML = isWhitelisted ? "Remove domain from whitelist" : "Add domain to whitelist";
   });
 
-  deleteCurrentTabCookies.addEventListener("click", async () => {
+  deleteCurrentTabCookies.addEventListener("click", async (e) => {
+    e.preventDefault();
     await chrome.runtime.sendMessage({ action: "deleteCurrentTabCookies" });
     message.textContent = `All cookies for the current tab deleted.`;
     await loadCookiesDetails();

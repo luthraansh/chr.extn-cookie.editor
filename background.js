@@ -36,6 +36,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.action === "getWhitelist") {
       const result = await getWhitelist();
       sendResponse(result);
+    } else if (request.action === "saveWhitelist") {
+      const result = await saveWhitelist(request.whitelist);
+      sendResponse(result);
     } else if (request.action === "getCurrentTabCookies") {
       const result = await getCurrentTabCookies();
       sendResponse(result);
@@ -123,16 +126,19 @@ async function toggleDomainWhitelist() {
   } else {
     whitelist.push(domain);
   }
-  const sortedUniqueWhitelist = [...new Set(whitelist)].sort(); // Remove duplicates and sort
-  chrome.storage.local.set({ whitelist: sortedUniqueWhitelist }, () => {
-    setExtensionIcon(!isWhitelisted); // flipping the value as it was just toggled
-    return { success: true };
-  });
+  await saveWhitelist(whitelist);
+  setExtensionIcon(!isWhitelisted); // flipping the value as it was just toggled
 }
 
 async function getWhitelist() {
   const whitelist = (await chrome.storage.local.get("whitelist")).whitelist || [];
   return whitelist;
+}
+
+async function saveWhitelist(whitelist) {
+  const sortedUniqueWhitelist = [...new Set(whitelist)].sort(); // Dedupe and sort
+  await chrome.storage.local.set({ whitelist: sortedUniqueWhitelist });
+  return { whitelist: sortedUniqueWhitelist };
 }
 
 async function getNonWhitelistedDomainsWithCount() {
