@@ -74,6 +74,8 @@ async function browserStartup() {
   const deleteOnStartup = (await chrome.storage.local.get('deleteOnStartup'))?.deleteOnStartup;
   if (deleteOnStartup) {
     await deleteNonWhitelisted();
+  } else {
+    console.log(new Date().toLocaleString(), ':', 'Skipping deletion because Delete on Startup is not checked.');
   }
 }
 
@@ -91,12 +93,12 @@ async function getCurrentTabInfo() {
   if (tab) {
     currentTabInfo.url = tab.url;
     currentTabInfo.domain = tab.url;
-  }
-  if (tab.url?.startsWith("http")) {
-    const whitelist = await getWhitelist();
-    currentTabInfo.domain = getDomain(tab.url);
-    currentTabInfo.isWhitelisted = whitelist.includes(currentTabInfo.domain);
-    currentTabInfo.isHttp = true;
+    if (tab.url && tab.url.startsWith("http")) {
+      const whitelist = await getWhitelist();
+      currentTabInfo.domain = getDomain(tab.url);
+      currentTabInfo.isWhitelisted = whitelist.includes(currentTabInfo.domain);
+      currentTabInfo.isHttp = true;
+    }
   }
   return currentTabInfo;
 }
