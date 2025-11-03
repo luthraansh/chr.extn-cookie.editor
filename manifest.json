@@ -24,5 +24,6 @@
   "description": "Whitelist domains, and view/edit current tab cookies.",
   "options_page": "options.html",
   "permissions": [ "cookies", "windows", "tabs", "activeTab", "storage", "browsingData" ],
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxhjPM7B3zJ8RE7NfO5QaJRZwSfnYRp192n8fP8qo9JX0WZUumU1QccldTLVumu43wv8mgFFsnDP2YOqMxPbx0g2l0Durjq4qCOPYYFFtquUP1QsEFP5RZMkg6BnQncpM7mThLee6nutKFmYPX4UCIb/4FB9l6EakQKb0gjie08YV8auKH1nPC3f7/WrRUfLE56iXn3IcVNpbbEMhZ+7hbUWbdBYDXQAPERo/YV2CNMjLK/Ry8cQlBwbItWXvC3y0O8TbONfCWPbXOwJkexPZxc6282L/3zQkzWfZaabuFEwNNC2tjRwnNHgu/F9t4LZjgRm6kZjObSEGAY5IM0oWQwIDAQAB",
   "version": "0.8"
 }
